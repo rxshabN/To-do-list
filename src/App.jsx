@@ -8,9 +8,11 @@ function App() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [showFinished, setShowFinished] = useState(true);
+  const [isTodosLoaded, setIsTodosLoaded] = useState(false);
 
   const toggleFinished = () => setShowFinished(!showFinished);
 
+  // Load todos from localStorage when the component mounts
   useEffect(() => {
     const todoString = localStorage.getItem("todos");
     console.log("Retrieved todos from localStorage:", todoString); // Debugging line
@@ -27,12 +29,16 @@ function App() {
     } else {
       console.log("No todos found in localStorage"); // Debugging line
     }
+    setIsTodosLoaded(true);
   }, []);
 
+  // Save todos to localStorage whenever the todos state changes
   useEffect(() => {
-    console.log("Saving todos to localStorage:", todos); // Debugging line
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
+    if (isTodosLoaded) {
+      console.log("Saving todos to localStorage:", todos); // Debugging line
+      localStorage.setItem("todos", JSON.stringify(todos));
+    }
+  }, [todos, isTodosLoaded]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
